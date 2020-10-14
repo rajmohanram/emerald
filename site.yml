@@ -6,7 +6,7 @@
     - vars/main.yml
   
   tasks:
-    - name: get latest version of the component
+    - name: Get latest version of the component
       local_action:
         module: uri
         url: "{{ repo_manager_url }}"

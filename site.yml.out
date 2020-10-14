@@ -1,0 +1,65 @@
+rajmohan@LAPTOP-M8IDQ349:emerald$ ansible-playbook site.yml
+
+PLAY [Prepare the Testing environment] ************************************************************************************************
+
+TASK [Get latest version of the component] ********************************************************************************************
+ok: [test1 -> localhost]
+
+TASK [Display response from Nexus] ****************************************************************************************************
+ok: [test1] => {
+    "response.json": {
+        "continuationToken": null,
+        "items": [
+            {
+                "checksum": {
+                    "md5": "bf2184d1a90e46af49255ecbeaf4b221",
+                    "sha1": "a2363646a9dd05955633b450010b59a21af8a423"
+                },
+                "downloadUrl": "http://192.168.128.30:8081/repository/maven-central/abbot/abbot/1.4.0/abbot-1.4.0.jar",
+                "format": "maven2",
+                "id": "bWF2ZW4tY2VudHJhbDowODkwOWJmMGM4NmNmNmM5NjAwYWFkZTg5ZTFjNWUyNQ",
+                "path": "abbot/abbot/1.4.0/abbot-1.4.0.jar",
+                "repository": "maven-central"
+            },
+            {
+                "checksum": {
+                    "md5": "28bed71e03d65aeea000333f421f9304",
+                    "sha1": "596d91e67631b0deb05fb685d8d1b6735f3e4f60"
+                },
+                "downloadUrl": "http://192.168.128.30:8081/repository/maven-central/abbot/abbot/0.13.0/abbot-0.13.0.jar",
+                "format": "maven2",
+                "id": "bWF2ZW4tY2VudHJhbDpjNzU0NTU3OWE3YTE1MzkwZGU0Y2VjNDRjODY5ODZmNw",
+                "path": "abbot/abbot/0.13.0/abbot-0.13.0.jar",
+                "repository": "maven-central"
+            }
+        ]
+    }
+}
+
+TASK [Set facts - download url & SHA1] ************************************************************************************************
+ok: [test1]
+ok: [test2]
+
+TASK [Display facts  - download url & SHA1] *******************************************************************************************
+ok: [test1] => {
+    "msg": [
+        "http://192.168.128.30:8081/repository/maven-central/abbot/abbot/1.4.0/abbot-1.4.0.jar",
+        "a2363646a9dd05955633b450010b59a21af8a423"
+    ]
+}
+ok: [test2] => {
+    "msg": [
+        "http://192.168.128.30:8081/repository/maven-central/abbot/abbot/1.4.0/abbot-1.4.0.jar",
+        "a2363646a9dd05955633b450010b59a21af8a423"
+    ]
+}
+
+TASK [Download the component on the target servers] ***********************************************************************************
+changed: [test2]
+changed: [test1]
+
+PLAY RECAP ****************************************************************************************************************************
+test1                      : ok=5    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+test2                      : ok=3    changed=1    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   
+
+rajmohan@LAPTOP-M8IDQ349:emerald$ 
