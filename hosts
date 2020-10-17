@@ -1,6 +1,6 @@
-test1    ansible_host=server-1
-test2    ansible_host=server-2
+target1    ansible_host=server-1
+
 
 [staging]
-test1
-test2
+target1
+
