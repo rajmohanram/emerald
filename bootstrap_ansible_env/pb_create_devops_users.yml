@@ -6,7 +6,7 @@
     - vars/main.yml
   
   tasks:
-    - name: Creating devops user
+    - name: Creating devops users
       user:
         name: "{{ item }}"
         group: "{{ devops_group }}"
@@ -14,12 +14,21 @@
         shell: /bin/bash
         create_home: yes
       loop: "{{ devops_users }}"
+      register: output
+
+    - name: Forcing password change on next login
+      command : passwd --expire {{ item.name }}
+      loop: "{{ output.results }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: item.changed
 
 
 
 # Create password hash using Python crypt module
+# Default password for users: devops@123 (force change password on next login)
 # python -c 'import crypt; print crypt.crypt("devops@123", "$6$0ibWPWcLfCX4hgRV")'
 # Password Hash: $6$0ibWPWcLfCX4hgRV$yqGyj72o4Qgl.pB6gTIDI7AgbRLm6L4I7geY3Z0arqogCp4PvfqxWQaF7v0R/T0c4jNiy6kz.UTBML8B0NHj70
 
 # Run playbook:
-# ansible-playbook pb_create_devops_users.yml
+# ansible-playbook pb_create_devops_users.yml --ask-pass

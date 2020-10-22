@@ -29,7 +29,6 @@
           path: "{{ ssh_keys_dir }}"
           owner: root
           group: "{{ devops_group }}"
-          mode: ug+rX,o-rX
           state: directory
 
       - name: Generating SSH key pairs for ansible user
@@ -37,6 +36,14 @@
         args:
           creates: "{{ ssh_keys_dir }}/id_rsa"
 
+      - name: Restricting permission on SSH key pairs
+        file:
+          path: "{{ ssh_keys_dir }}"
+          owner: root
+          group: "{{ devops_group }}"
+          mode: u=rwX,g=rX,o=rX
+          recurse: yes
+          state: directory
 
 
 # Run playbook:
