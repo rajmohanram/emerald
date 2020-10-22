@@ -1,0 +1,25 @@
+---
+- name: Creating devops users
+  hosts: control_nodes
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  
+  tasks:
+    - name: Creating devops user
+      user:
+        name: "{{ item }}"
+        group: "{{ devops_group }}"
+        password: "{{ password_hash }}"
+        shell: /bin/bash
+        create_home: yes
+      loop: "{{ devops_users }}"
+
+
+
+# Create password hash using Python crypt module
+# python -c 'import crypt; print crypt.crypt("devops@123", "$6$0ibWPWcLfCX4hgRV")'
+# Password Hash: $6$0ibWPWcLfCX4hgRV$yqGyj72o4Qgl.pB6gTIDI7AgbRLm6L4I7geY3Z0arqogCp4PvfqxWQaF7v0R/T0c4jNiy6kz.UTBML8B0NHj70
+
+# Run playbook:
+# ansible-playbook pb_create_devops_users.yml

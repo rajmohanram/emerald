@@ -1,0 +1,40 @@
+---
+- name: Peparing managed nodes
+  hosts: managed_nodes
+  gather_facts: yes
+  gather_subset: min
+  vars_files:
+    - vars/main.yml
+  
+  tasks:
+      - name: Enabling passwordless sudo
+        lineinfile:
+          path: /etc/sudoers.d/wheel
+          line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+          create: yes
+
+      - name: Creating devops user
+        user:
+          name: "{{ devops_user_remote }}"
+          group: wheel
+          shell: /bin/bash
+          create_home: yes
+
+      - name: Creating .ssh directory, if not exist
+        file:
+          path: /home/{{ devops_user_remote }}/.ssh
+          owner: "{{ devops_user_remote }}"
+          group: root
+          state: directory
+
+      - name: Adding public key to authorize_keys file, if not exist
+        lineinfile:
+          path: /home/{{ devops_user_remote }}/.ssh/authorized_keys
+          line: "{{ public_key }}"
+          owner: "{{ devops_user_remote }}"
+          group: root
+          create: yes
+
+
+# Run playbook:
+# ansible-playbook pb_bootsrap_managed_node.yml --ask-pass --ask-become-pass

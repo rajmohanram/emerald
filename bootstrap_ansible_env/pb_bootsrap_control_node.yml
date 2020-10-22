@@ -1,0 +1,43 @@
+---
+- name: Peparing managed nodes
+  hosts: control_nodes
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  
+  tasks:
+      - name: Enabling passwordless sudo
+        lineinfile:
+          path: /etc/sudoers.d/wheel
+          line: "%wheel ALL=(ALL) NOPASSWD: ALL"
+          create: yes
+
+      - name: Creating group for devops users
+        group:
+          name: "{{ devops_group }}"
+          state: present
+
+      - name: Creating ansible project workspace
+        file:
+          path: "{{ ansible_workspace }}"
+          owner: root
+          group: "{{ devops_group }}"
+          state: directory
+
+      - name: Creating SSH directory for ansible user
+        file:
+          path: "{{ ssh_keys_dir }}"
+          owner: root
+          group: "{{ devops_group }}"
+          mode: ug+rX,o-rX
+          state: directory
+
+      - name: Generating SSH key pairs for ansible user
+        command : ssh-keygen -q -t rsa -b 4096 -f {{ ssh_keys_dir }}/id_rsa -C "" -N ""
+        args:
+          creates: "{{ ssh_keys_dir }}/id_rsa"
+
+
+
+# Run playbook:
+# ansible-playbook pb_bootsrap_control_node.yml --ask-pass --ask-become-pass

@@ -1,0 +1,10 @@
+---
+devops_group: devops
+ansible_workspace: /opt/ansible
+ssh_keys_dir: "{{ ansible_workspace }}/.ssh"
+public_key: "{{ lookup('file', '/opt/ansible/.ssh/id_rsa.pub') }}"
+devops_user_remote: ansible
+password_hash: $6$0ibWPWcLfCX4hgRV$yqGyj72o4Qgl.pB6gTIDI7AgbRLm6L4I7geY3Z0arqogCp4PvfqxWQaF7v0R/T0c4jNiy6kz.UTBML8B0NHj70
+devops_users:
+  - user1
+  - user2
