@@ -6,15 +6,15 @@
     - vars/main.yml
   
   tasks:
-    - name: Check if Java is already installed (java-1.8.0-openjdk.x86_64)
+    - name: Check if Java is already installed (check version if installed already - java-1.8.0-openjdk.x86_64)
 
-    - name: Install Java
+    - name: Install Java (if not already installed)
 
-    - name: Check Java version
+    - name: Check Java version (ensure Java is properly installed)
 
-    - name: Check if tomcat is already installed
+    - name: Check if tomcat is already installed (/usr/local/apache-tomcat-8.0.32/)
 
-    - name: Deploy tomcat
+    - name: Deploy tomcat (if not aleady installed)
 
     - name: Add startup script (systemd unit file)
 

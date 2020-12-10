@@ -1,0 +1,16 @@
+---
+- name: Deploy Web Application
+  hosts: target_nodes
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  
+  tasks:
+    - name: Check if the appliation is already deployed
+
+    - name: Stop and undeploy the application (if already deployed)
+
+    - name: Deploy the war file
+
+    - name: Check if the application is working
+
