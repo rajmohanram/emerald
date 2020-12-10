@@ -2,15 +2,30 @@
 - name: Deploy Web Application
   hosts: target_nodes
   gather_facts: no
-  vars_files:
-    - vars/main.yml
   
   tasks:
-    - name: Check if the appliation is already deployed
+    - name: Remove current war file (if already deployed)
+      file:
+        path: /usr/local/apache-tomcat-8.0.32/webapps/sample.war
+        state: absent
 
-    - name: Stop and undeploy the application (if already deployed)
+    - name: Wait unitll the app is undeployed
+      wait_for:
+        path: /usr/local/apache-tomcat-8.0.32/webapps/sample
+        state: absent
 
-    - name: Deploy the war file
+    - name: Copy war file
+      copy:
+        src: files/sample.war
+        dest: /usr/local/apache-tomcat-8.0.32/webapps/sample.war
+        owner: tomcat
+        group: tomcat
+      
+    - name: Wait unitll the app is deployed
+      wait_for:
+        path: /usr/local/apache-tomcat-8.0.32/webapps/sample
+        state: present
 
-    - name: Check if the application is working
-
+    - name: Check Application
+      uri:
+        url: http://192.168.0.146:8080/sample/
