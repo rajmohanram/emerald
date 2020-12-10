@@ -1,0 +1,50 @@
+---
+- name: Prepare the Testing environment
+  hosts: staging
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  
+  tasks:
+    - name: Get latest version of the component
+      local_action:
+        module: uri
+        url: "{{ repo_manager_url }}"
+        method: GET
+        user: admin
+        password: admin
+        force_basic_auth: yes
+        status_code: 200
+        timeout: 30
+      register: response
+      run_once: True
+      tags: getinfo
+
+    - name: Display response from Nexus
+      debug:
+        var: response.json
+      run_once: True
+      tags: getinfo
+
+    - name: Set facts - download url & SHA1
+      set_fact:
+        download_url: "{{response.json['items'][0].downloadUrl}}"
+        checksum_sha1: "{{response.json['items'][0].checksum.sha1}}"
+      tags: getinfo
+
+    - name: Display facts  - download url & SHA1
+      debug:
+        msg:
+          - "{{download_url}}"
+          - "{{checksum_sha1}}"
+      tags: getinfo
+
+    - name: Download the component on the target servers
+      get_url:
+        url: "{{download_url}}"
+        username: admin
+        password: admin
+        force_basic_auth: yes
+        dest: /tmp
+        checksum: sha1:"{{checksum_sha1}}"
+      tags: getinfo
