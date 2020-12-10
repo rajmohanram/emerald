@@ -1,0 +1,24 @@
+---
+- name: Install tomcat
+  hosts: target_nodes
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+  
+  tasks:
+    - name: Check if Java is already installed (java-1.8.0-openjdk.x86_64)
+
+    - name: Install Java
+
+    - name: Check Java version
+
+    - name: Check if tomcat is already installed
+
+    - name: Deploy tomcat
+
+    - name: Add startup script (systemd unit file)
+
+    - name: Start tomcat
+
+    - name: Check tomcat is running
+  
