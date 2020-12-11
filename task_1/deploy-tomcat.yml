@@ -3,7 +3,7 @@
 - name: Install tomcat
   hosts: target_nodes
   gather_facts: no
-  
+
   tasks:
     - name: Check if Java is already installed
       shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g'
@@ -15,43 +15,43 @@
 
     - name: Copy tomcat
       copy:
-        src: files/apache-tomcat-8.0.32.tar.gz
-        dest: /tmp/apache-tomcat-8.0.32.tar.gz
+        src: files/apache-tomcat-{{tomcat_version}}.tar.gz
+        dest: /tmp/apache-tomcat-{{tomcat_version}}.tar.gz
 
     - name: Create group tomcat
       group:
-        name: tomcat
+        name: "{{tomcat_group}}"
         state: present
     - name: Create user tomcat
       user:
-        name: tomcat
+        name: "{{tomcat_user}}"
         state: present
 
-    - name: Create directory /usr/local/apache-tomcat-8.0.32
+    - name: Create directory "{{inst_root}}"/apache-tomcat-{{tomcat_version}}
       file:
-        path: /usr/local/apache-tomcat-8.0.32
+        path: "{{inst_root}}/apache-tomcat-{{tomcat_version}}"
         state: directory
-        owner: tomcat
-        group: tomcat
+        owner: "{{tomcat_group}}"
+        group: "{{tomcat_user}}"
         mode: "0755"
 
     - name: Install tomcat
       unarchive:
-        src:  /tmp/apache-tomcat-8.0.32.tar.gz
-        dest: /usr/local/apache-tomcat-8.0.32
+        src:  /tmp/apache-tomcat-{{tomcat_version}}.tar.gz
+        dest: "{{inst_root}}/apache-tomcat-{{tomcat_version}}"
         remote_src: yes
         extra_opts: "--strip-components=1"
-        owner: tomcat
-        group: tomcat
-        creates: /usr/local/apache-tomcat-8.0.32/bin
+        owner: "{{tomcat_group}}"
+        group: "{{tomcat_user}}"
+        creates: "{{inst_root}}/apache-tomcat-{{tomcat_version}}/bin"
         mode: "0755"
 
     - name: Replace tomcat-users.xml file
       copy:
         src: files/tomcat-users.xml
-        dest: /usr/local/apache-tomcat-8.0.32/conf/tomcat-users.xml
-        owner: tomcat
-        group: tomcat
+        dest: "{{inst_root}}/apache-tomcat-{{tomcat_version}}/conf/tomcat-users.xml"
+        owner: "{{tomcat_group}}"
+        group: "{{tomcat_user}}"
 
     - name: Add startup script (systemd unit file)
       copy:
@@ -72,4 +72,4 @@
 
     - name: Check tomcat is running
       uri:
-        url: http://10.66.205.140:8080
+        url: http://{{inventory_host}}:{{tomcat_port}}/

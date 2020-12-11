@@ -1,28 +1,28 @@
 - name: Deploy Web Application
   hosts: target_nodes
   gather_facts: no
-  
+
   tasks:
     - name: Remove current war file (if already deployed)
       file:
-        path: /usr/local/apache-tomcat-8.0.32/webapps/simpleweb.war
+        path: "{{inst_root}}/apache-tomcat-{{tomcat_version}}/webapps/{{app_name}}.war"
         state: absent
 
     - name: Wait unitll the app is undeployed
       wait_for:
-        path: /usr/local/apache-tomcat-8.0.32/webapps/simpleweb
+        path: "{{inst_root}}/apache-tomcat-{{tomcat_version}}/webapps/{{app_name}}"
         state: absent
 
     - name: Copy war file
       copy:
-        src: files/simpleweb.war
-        dest: /usr/local/apache-tomcat-8.0.32/webapps/simpleweb.war
+        src: files/{{app_name}}.war
+        dest: "{{inst_root}}/apache-tomcat-{{tomcat_version}}/webapps/{{app_name}}.war"
         owner: tomcat
         group: tomcat
 
     - name: Wait unitll the app is deployed
       wait_for:
-        path: /usr/local/apache-tomcat-8.0.32/webapps/simpleweb
+        path: "{{inst_root}}/apache-tomcat-{{tomcat_version}}/webapps/{{app_name}}"
         state: present
 
     - wait_for:
@@ -30,4 +30,4 @@
 
     - name: Check Application
       uri:
-        url: http://10.66.205.140:8080/simpleweb/
+        url: http://{{inventory_host}}:{{tomcat_port}}/{{app_name}}/

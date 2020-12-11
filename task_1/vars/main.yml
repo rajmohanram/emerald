@@ -1,3 +1,7 @@
 ---
-repo_manager_url: http://192.168.128.30:8081/service/rest/v1/search/assets?sort=version&repository=maven-central&maven.artifactId=abbot&maven.extension=jar
-
+tomcat_version: 8.0.32
+tomcat_port: 8080
+inst_root: /usr/local
+tomcat_group: tomcat
+tomcat_user: tomcat
+app_name: simpleweb
