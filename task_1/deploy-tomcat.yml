@@ -1,17 +1,31 @@
-
 ---
 - name: Install tomcat
   hosts: target_nodes
   gather_facts: no
+  vars_files:
+    - vars/main.yml
 
   tasks:
     - name: Check if Java is already installed
       shell: java -version 2>&1 | grep version | awk '{print $3}' | sed 's/"//g'
       register: java_version
+      tags: run
 
-    - debug:
-        msg: Installed Java version is {{java_version.stdout}}
-      when: java_version is success
+    # - debug:
+    #     var: java_version
+    #   tags: run
+
+    - name: Install Java
+      package:
+        name: java-1.8.0-openjdk
+        state: present
+      when: java_version.stdout | length == 0
+      tags: run
+
+    # - debug:
+    #     msg: Installed Java version is {{java_version.stdout}}
+    #   when: java_version.stdout | length > 0
+    #   tags: run
 
     - name: Copy tomcat
       copy:
@@ -22,6 +36,7 @@
       group:
         name: "{{tomcat_group}}"
         state: present
+
     - name: Create user tomcat
       user:
         name: "{{tomcat_user}}"
@@ -69,7 +84,7 @@
 
     - wait_for:
         timeout: 5
-
+        
     - name: Check tomcat is running
       uri:
-        url: http://{{inventory_host}}:{{tomcat_port}}/
+        url: http://{{ansible_host}}:{{tomcat_port}}/

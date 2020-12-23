@@ -5,3 +5,4 @@ inst_root: /usr/local
 tomcat_group: tomcat
 tomcat_user: tomcat
 app_name: simpleweb
+java_home: /usr/lib/jvm/jre
