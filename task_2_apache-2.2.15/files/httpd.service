@@ -1,0 +1,14 @@
+[Unit]
+Description=The Apache HTTP Server
+After=network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=forking
+ExecStart=/opt/apache1/bin/apachectl -k start
+PIDFile=/opt/apache1/logs/httpd.pid
+ExecReload=/opt/apache1/bin/apachectl -k restart
+ExecStop=/opt/apache1/bin/bin/apachectl -k stop
+PrivateTmp=True
+
+[Install]
+WantedBy=multi-user.target

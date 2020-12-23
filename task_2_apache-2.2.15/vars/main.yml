@@ -1,0 +1,7 @@
+---
+httpd_version: 2.2.15
+httpd_port: 8080
+install_root: /opt/apache1
+doc_root: /var/www/html
+httpd_group: apache
+httpd_user: apache

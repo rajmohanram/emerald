@@ -1,0 +1,69 @@
+---
+- name: Deploy httpd 2.2.15
+  hosts: target_nodes
+  gather_facts: no
+  vars_files:
+    - vars/main.yml
+
+  tasks:
+    - name: creating user group - apache
+      group:
+        name: "{{httpd_group}}"
+        state: present
+
+    - name: creating user - apache
+      user:
+        name: "{{httpd_user}}"
+        state: present
+
+    - name: create installation directory "{{install_root}}"
+      file:
+        path: "{{install_root}}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: create document root directory "{{doc_root}}"
+      file:
+        path: "{{doc_root}}"
+        state: directory
+        owner: "{{httpd_group}}"
+        group: "{{httpd_user}}"
+        mode: "0755"
+
+    - name: copying httpd binary
+      copy:
+        src: files/httpd-{{httpd_version}}-bin.tar.gz
+        dest: /tmp/httpd-{{httpd_version}}-bin.gz
+        mode: "0755"
+
+    - name: installing apache httpd
+      unarchive:
+        src:  /tmp/httpd-{{httpd_version}}-bin.gz
+        dest: "{{install_root}}"
+        remote_src: yes
+        extra_opts: "--strip-components=1"
+        creates: "{{install_root}}/bin/httpd"
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: adding systemd unit file for httpd
+      copy:
+        src: files/httpd.service
+        dest: /usr/lib/systemd/system/httpd.service
+        mode: "0644"
+
+    - name: reloading systemctl daemon
+      systemd:
+        daemon_reload: yes
+
+    - name: staring httpd service
+      service:
+        name: httpd
+        state: started
+        
+    - name: Check httpd is running
+      uri:
+        url: http://{{ansible_host}}/

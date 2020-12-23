@@ -1,0 +1,18 @@
+Logic to deploy httpd:
+----------------------
+Create apache user and group
+Create document root (/var/www/html)
+Copy 'httpd-2.2.15-bin.tar.gz' file to '/tmp' on target machine
+Extract 'httpd-2.2.15-bin.tar.gz' to '/opt/apache1'
+Copy 'httpd.service' unit file to '/usr/lib/systemd/system/httpd.service'
+Reload systemctl daemon (systemctl daemon-reload)
+Start httpd service (systemctl start httpd)
+Enable httpd service (systemctl enable httpd)
+Verify web service is function (Check base URL for HTTP response status code 200)
+
+Logic to deploy application:
+----------------------------
+Update httpd configuration file (/opt/apache1/conf/httpd.conf)
+Deploy the required application at /var/www/html
+Restart httpd service
+Verify web service is function (appropriate URL)
